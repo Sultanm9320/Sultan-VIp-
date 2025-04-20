@@ -1,0 +1,1412 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sultan VIP Investment Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <style>
+        :root {
+            --primary: #4e73df;
+            --secondary: #1cc88a;
+            --dark: #5a5c69;
+            --danger: #e74a3b;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f8f9fc;
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            color: var(--primary);
+        }
+        
+        .vip-card {
+            border-top: 5px solid var(--secondary);
+            transition: all 0.3s ease;
+        }
+        
+        .vip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .admin-panel {
+            background-color: #f8d7da;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: none;
+        }
+        
+        .admin-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary) 0%, #224abe 100%);
+            color: white;
+            padding: 5rem 0;
+            border-radius: 0 0 20px 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#home">
+                <i class="fas fa-crown me-2"></i>Sultan VIP
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#products">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#recharge">Recharge</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#withdraw">Withdraw</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#team">Team</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#checkin">Check-in</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#download">Download</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+                <div>
+                    <button class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <i class="fas fa-sign-in-alt me-1"></i> Login
+                    </button>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#signupModal">
+                        <i class="fas fa-user-plus me-1"></i> Sign Up
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Admin Access Button -->
+    <button id="adminAccessBtn" class="admin-btn btn btn-danger shadow-lg">
+        <i class="fas fa-lock"></i>
+    </button>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-panel container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">
+                <i class="fas fa-user-shield me-2"></i>Admin Dashboard
+            </h2>
+            <button id="closeAdminPanel" class="btn btn-sm btn-danger">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+        
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#usersTab">Users</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#activitiesTab">Activities</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#transactionsTab">Transactions</a>
+            </li>
+        </ul>
+        
+        <div class="tab-content">
+            <!-- Users Tab -->
+            <div class="tab-pane fade show active" id="usersTab">
+                <table id="usersTable" class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data loaded via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Activities Tab -->
+            <div class="tab-pane fade" id="activitiesTab">
+                <div class="mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" id="activitySearch" class="form-control" placeholder="Search activities...">
+                    </div>
+                </div>
+                <table id="activitiesTable" class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Time</th>
+                            <th>User</th>
+                            <th>Activity</th>
+                            <th>Details</th>
+                            <th>IP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data loaded via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Transactions Tab -->
+            <div class="tab-pane fade" id="transactionsTab">
+                <table id="transactionsTable" class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data loaded via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div class="modal fade" id="adminLoginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user-shield me-2"></i>Admin Authentication
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="adminLoginForm">
+                        <div class="mb-4">
+                            <label for="adminPassword" class="form-label fw-bold">Enter Admin Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                <input type="password" class="form-control" id="adminPassword" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">
+                            <i class="fas fa-unlock me-2"></i>Access Admin Panel
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Sections -->
+    <div id="mainContent">
+        <!-- Hero Section -->
+        <section id="home" class="hero-section">
+            <div class="container text-center py-5">
+                <h1 class="display-4 fw-bold mb-4">Maximize Your Earnings</h1>
+                <p class="lead mb-5">Join our VIP investment platform and start earning daily returns</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="#products" class="btn btn-light btn-lg px-4 py-2">
+                        <i class="fas fa-gem me-2"></i>View Packages
+                    </a>
+                    <a href="#recharge" class="btn btn-outline-light btn-lg px-4 py-2">
+                        <i class="fas fa-wallet me-2"></i>Invest Now
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="py-5 bg-white">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <h2 class="fw-bold mb-4">About Sultan VIP</h2>
+                        <p class="lead text-primary">Secure investments with daily returns</p>
+                        <p>Welcome to Sultan VIP Investment Platform, founded by Sultan Mohamed Gemechu. We provide transparent and secure investment opportunities with daily returns through Commercial Bank of Ethiopia.</p>
+                        <div class="d-flex align-items-center mt-4">
+                            <div class="me-4">
+                                <h3 class="text-primary">100%</h3>
+                                <p class="mb-0">Secure Transactions</p>
+                            </div>
+                            <div>
+                                <h3 class="text-primary">24/7</h3>
+                                <p class="mb-0">Customer Support</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80" 
+                             class="img-fluid rounded-3 shadow" alt="Investment Office">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIP Products Section -->
+        <section id="products" class="py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold">VIP Investment Packages</h2>
+                    <p class="lead text-muted">Choose your package and start earning today</p>
+                </div>
+                
+                <div class="row g-4">
+                    <!-- VIP 1 -->
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 vip-card border-0 shadow-sm">
+                            <div class="card-img-top bg-primary text-white text-center py-4">
+                                <i class="fas fa-gem fa-3x mb-3"></i>
+                                <h4 class="mb-0">VIP 1</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <h3 class="card-title">$100</h3>
+                                <div class="d-flex justify-content-center mb-3">
+                                    <span class="badge bg-success">Daily: $10</span>
+                                </div>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Secure Investment</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Daily Returns</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>24/7 Support</li>
+                                </ul>
+                                <a href="#recharge" class="btn btn-primary w-100">Invest Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- VIP 2 -->
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 vip-card border-0 shadow-sm">
+                            <div class="card-img-top bg-primary text-white text-center py-4">
+                                <i class="fas fa-gem fa-3x mb-3"></i>
+                                <h4 class="mb-0">VIP 2</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <h3 class="card-title">$250</h3>
+                                <div class="d-flex justify-content-center mb-3">
+                                    <span class="badge bg-success">Daily: $25</span>
+                                </div>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Secure Investment</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Daily Returns</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>24/7 Support</li>
+                                </ul>
+                                <a href="#recharge" class="btn btn-primary w-100">Invest Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- VIP 3 -->
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 vip-card border-0 shadow-sm">
+                            <div class="card-img-top bg-primary text-white text-center py-4">
+                                <i class="fas fa-gem fa-3x mb-3"></i>
+                                <h4 class="mb-0">VIP 3</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <h3 class="card-title">$500</h3>
+                                <div class="d-flex justify-content-center mb-3">
+                                    <span class="badge bg-success">Daily: $50</span>
+                                </div>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Secure Investment</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Daily Returns</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Priority Support</li>
+                                </ul>
+                                <a href="#recharge" class="btn btn-primary w-100">Invest Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- VIP 4 -->
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 vip-card border-0 shadow-sm">
+                            <div class="card-img-top bg-primary text-white text-center py-4">
+                                <i class="fas fa-gem fa-3x mb-3"></i>
+                                <h4 class="mb-0">VIP 4</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <h3 class="card-title">$1,000</h3>
+                                <div class="d-flex justify-content-center mb-3">
+                                    <span class="badge bg-success">Daily: $100</span>
+                                </div>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Secure Investment</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Daily Returns</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Priority Support</li>
+                                </ul>
+                                <a href="#recharge" class="btn btn-primary w-100">Invest Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row g-4 mt-2">
+                    <!-- VIP 5 -->
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 vip-card border-0 shadow-sm">
+                            <div class="card-img-top bg-primary text-white text-center py-4">
+                                <i class="fas fa-gem fa-3x mb-3"></i>
+                                <h4 class="mb-0">VIP 5</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <h3 class="card-title">$2,500</h3>
+                                <div class="d-flex justify-content-center mb-3">
+                                    <span class="badge bg-success">Daily: $250</span>
+                                </div>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Secure Investment</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Daily Returns</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>VIP Support</li>
+                                </ul>
+                                <a href="#recharge" class="btn btn-primary w-100">Invest Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- VIP 6 -->
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 vip-card border-0 shadow-sm">
+                            <div class="card-img-top bg-primary text-white text-center py-4">
+                                <i class="fas fa-gem fa-3x mb-3"></i>
+                                <h4 class="mb-0">VIP 6</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <h3 class="card-title">$5,000</h3>
+                                <div class="d-flex justify-content-center mb-3">
+                                    <span class="badge bg-success">Daily: $500</span>
+                                </div>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Secure Investment</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Daily Returns</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>VIP Support</li>
+                                </ul>
+                                <a href="#recharge" class="btn btn-primary w-100">Invest Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- VIP 7 -->
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 vip-card border-0 shadow-sm">
+                            <div class="card-img-top bg-primary text-white text-center py-4">
+                                <i class="fas fa-gem fa-3x mb-3"></i>
+                                <h4 class="mb-0">VIP 7</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <h3 class="card-title">$10,000</h3>
+                                <div class="d-flex justify-content-center mb-3">
+                                    <span class="badge bg-success">Daily: $1,000</span>
+                                </div>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Secure Investment</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Daily Returns</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>VIP Support</li>
+                                </ul>
+                                <a href="#recharge" class="btn btn-primary w-100">Invest Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- VIP 8 -->
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card h-100 vip-card border-0 shadow-sm">
+                            <div class="card-img-top bg-primary text-white text-center py-4">
+                                <i class="fas fa-gem fa-3x mb-3"></i>
+                                <h4 class="mb-0">VIP 8</h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <h3 class="card-title">$25,000</h3>
+                                <div class="d-flex justify-content-center mb-3">
+                                    <span class="badge bg-success">Daily: $2,500</span>
+                                </div>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Secure Investment</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Daily Returns</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>VIP Support</li>
+                                </ul>
+                                <a href="#recharge" class="btn btn-primary w-100">Invest Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recharge Section -->
+        <section id="recharge" class="py-5 bg-white">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow">
+                            <div class="card-header bg-primary text-white">
+                                <h3 class="mb-0">
+                                    <i class="fas fa-wallet me-2"></i>Account Recharge
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info">
+                                    <h5 class="alert-heading">
+                                        <i class="fas fa-university me-2"></i>Bank Transfer Details
+                                    </h5>
+                                    <hr>
+                                    <p class="mb-1"><strong>Account Name:</strong> Sultan Mohamed Gemechu</p>
+                                    <p class="mb-1"><strong>Bank Name:</strong> Commercial Bank of Ethiopia (CBE)</p>
+                                    <p class="mb-1"><strong>Account Number:</strong> 1000634709006</p>
+                                    <hr>
+                                    <p class="mb-0">After transferring, please complete the form below to confirm your recharge.</p>
+                                </div>
+                                
+                                <form id="rechargeForm">
+                                    <div class="mb-3">
+                                        <label for="vipPackage" class="form-label fw-bold">Select VIP Package</label>
+                                        <select class="form-select" id="vipPackage" required>
+                                            <option value="" selected disabled>Choose package</option>
+                                            <option value="VIP1">VIP 1 - $100 (Daily $10)</option>
+                                            <option value="VIP2">VIP 2 - $250 (Daily $25)</option>
+                                            <option value="VIP3">VIP 3 - $500 (Daily $50)</option>
+                                            <option value="VIP4">VIP 4 - $1,000 (Daily $100)</option>
+                                            <option value="VIP5">VIP 5 - $2,500 (Daily $250)</option>
+                                            <option value="VIP6">VIP 6 - $5,000 (Daily $500)</option>
+                                            <option value="VIP7">VIP 7 - $10,000 (Daily $1,000)</option>
+                                            <option value="VIP8">VIP 8 - $25,000 (Daily $2,500)</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="amount" class="form-label fw-bold">Amount Transferred</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" class="form-control" id="amount" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="transactionId" class="form-label fw-bold">Transaction ID/Reference</label>
+                                        <input type="text" class="form-control" id="transactionId" required>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="screenshot" class="form-label fw-bold">Payment Proof (Screenshot)</label>
+                                        <input type="file" class="form-control" id="screenshot" accept="image/*" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                                        <i class="fas fa-paper-plane me-2"></i>Submit Recharge
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Withdraw Section -->
+        <section id="withdraw" class="py-5 bg-light">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow">
+                            <div class="card-header bg-success text-white">
+                                <h3 class="mb-0">
+                                    <i class="fas fa-money-bill-wave me-2"></i>Withdraw Funds
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <form id="withdrawForm">
+                                    <div class="mb-3">
+                                        <label for="fullName" class="form-label fw-bold">Full Name</label>
+                                        <input type="text" class="form-control" id="fullName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="bankName" class="form-label fw-bold">Bank Name</label>
+                                        <input type="text" class="form-control" id="bankName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="accountNumber" class="form-label fw-bold">Bank Account Number</label>
+                                        <input type="text" class="form-control" id="accountNumber" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="withdrawAmount" class="form-label fw-bold">Withdrawal Amount</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" class="form-control" id="withdrawAmount" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="withdrawPassword" class="form-label fw-bold">Withdrawal Password</label>
+                                        <input type="password" class="form-control" id="withdrawPassword" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-success w-100 py-2 fw-bold">
+                                        <i class="fas fa-hand-holding-usd me-2"></i>Request Withdrawal
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section id="team" class="py-5 bg-white">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold">Team & Referral Program</h2>
+                    <p class="lead text-muted">Grow your team and earn more</p>
+                </div>
+                
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow">
+                            <div class="card-header bg-info text-white">
+                                <h3 class="mb-0">
+                                    <i class="fas fa-users me-2"></i>Your Referral Network
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <h5 class="fw-bold mb-3">
+                                        <i class="fas fa-link me-2"></i>Your Personal Referral Link
+                                    </h5>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="referralLink" value="https://sultanvip.com/ref/username" readonly>
+                                        <button class="btn btn-primary" onclick="copyReferralLink()">
+                                            <i class="fas fa-copy me-1"></i>Copy
+                                        </button>
+                                    </div>
+                                    <small class="text-muted">Share this link with friends to earn referral bonuses</small>
+                                </div>
+                                
+                                <div class="row text-center mb-4">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card border-0 bg-light h-100 py-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-info">
+                                                    <i class="fas fa-user-plus me-2"></i>Direct
+                                                </h5>
+                                                <p class="card-text display-5 fw-bold">12</p>
+                                                <p class="card-text text-muted">Referrals</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card border-0 bg-light h-100 py-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-info">
+                                                    <i class="fas fa-network-wired me-2"></i>Team
+                                                </h5>
+                                                <p class="card-text display-5 fw-bold">45</p>
+                                                <p class="card-text text-muted">Members</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card border-0 bg-light h-100 py-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-info">
+                                                    <i class="fas fa-coins me-2"></i>Earnings
+                                                </h5>
+                                                <p class="card-text display-5 fw-bold">$1,250</p>
+                                                <p class="card-text text-muted">Commissions</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="alert alert-warning">
+                                    <h5 class="alert-heading">
+                                        <i class="fas fa-lightbulb me-2"></i>How It Works
+                                    </h5>
+                                    <ul class="mb-0">
+                                        <li>Earn 5% commission on your direct referrals' investments</li>
+                                        <li>Earn 2% commission on your team's investments (level 2)</li>
+                                        <li>Bonuses paid daily along with your investment returns</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Daily Check-in Section -->
+        <section id="checkin" class="py-5 bg-light">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow">
+                            <div class="card-header bg-warning text-white">
+                                <h3 class="mb-0">
+                                    <i class="fas fa-calendar-check me-2"></i>Daily Check-in
+                                </h3>
+                            </div>
+                            <div class="card-body text-center">
+                                <div class="mb-4">
+                                    <h4 class="fw-bold mb-4">Claim Your Daily Income</h4>
+                                    <div class="progress mb-3" style="height: 25px;">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" 
+                                             role="progressbar" style="width: 75%;" 
+                                             aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                                            75% Complete
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Complete your daily activities to earn full rewards</small>
+                                </div>
+                                
+                                <div class="row mb-4">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card border-0 bg-white h-100 py-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-success">
+                                                    <i class="fas fa-wallet me-2"></i>Available
+                                                </h5>
+                                                <p class="card-text display-5 fw-bold text-success">$120.50</p>
+                                                <p class="card-text text-muted">Balance</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="card border-0 bg-white h-100 py-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-primary">
+                                                    <i class="fas fa-coins me-2"></i>Today's
+                                                </h5>
+                                                <p class="card-text display-5 fw-bold text-primary">$10.00</p>
+                                                <p class="card-text text-muted">Earnings</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button class="btn btn-warning btn-lg w-100 py-3 fw-bold mb-3">
+                                    <i class="fas fa-gift me-2"></i>Claim Daily Income
+                                </button>
+                                <p class="text-muted">
+                                    <i class="fas fa-clock me-2"></i>Available in: <span id="countdown" class="fw-bold">23:59:59</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Download Section -->
+        <section id="download" class="py-5 bg-white">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold">Mobile Application</h2>
+                    <p class="lead text-muted">Take your investments on the go</p>
+                </div>
+                
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow">
+                            <div class="card-body p-5">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6 mb-4 mb-md-0">
+                                        <img src="https://images.unsplash.com/photo-1555774698-0b77e0d5fac6?ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80" 
+                                             class="img-fluid rounded-3 shadow" alt="Mobile App">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h3 class="fw-bold mb-4">Sultan VIP Mobile App</h3>
+                                        <p class="mb-4">Manage your investments, track your earnings, and withdraw funds directly from your mobile device.</p>
+                                        
+                                        <div class="mb-4">
+                                            <h5 class="fw-bold mb-3">
+                                                <i class="fas fa-check-circle text-success me-2"></i>Features:
+                                            </h5>
+                                            <ul class="list-unstyled">
+                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Real-time investment tracking</li>
+                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Daily check-in notifications</li>
+                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Secure transactions</li>
+                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Team management</li>
+                                                <li class="mb-2"><i class="fas fa-check text-success me-2"></i>24/7 customer support</li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <div class="d-grid gap-3">
+                                            <button class="btn btn-primary py-2 fw-bold">
+                                                <i class="fab fa-android me-2"></i>Download for Android
+                                            </button>
+                                            <button class="btn btn-dark py-2 fw-bold" disabled>
+                                                <i class="fab fa-apple me-2"></i>Coming Soon for iOS
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold">Contact Us</h2>
+                    <p class="lead text-muted">We're here to help you</p>
+                </div>
+                
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow">
+                            <div class="card-header bg-dark text-white">
+                                <h3 class="mb-0">
+                                    <i class="fas fa-envelope me-2"></i>Get In Touch
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-4 mb-md-0">
+                                        <h4 class="fw-bold mb-4">
+                                            <i class="fas fa-headset me-2"></i>Direct Support
+                                        </h4>
+                                        
+                                        <div class="d-flex align-items-start mb-4">
+                                            <div class="me-3 text-primary">
+                                                <i class="fas fa-phone-alt fa-2x"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="fw-bold mb-1">Phone Support</h5>
+                                                <p class="mb-0">+251 99 320 4587</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-flex align-items-start mb-4">
+                                            <div class="me-3 text-success">
+                                                <i class="fab fa-whatsapp fa-2x"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="fw-bold mb-1">WhatsApp</h5>
+                                                <p class="mb-0">
+                                                    <a href="https://wa.me/251993204587" target="_blank" class="text-decoration-none">
+                                                        Chat on WhatsApp
+                                                    </a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-flex align-items-start">
+                                            <div class="me-3 text-info">
+                                                <i class="fab fa-telegram fa-2x"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="fw-bold mb-1">Telegram</h5>
+                                                <p class="mb-0">
+                                                    <a href="https://t.me/HNA0993" target="_blank" class="text-decoration-none">
+                                                        @HNA0993
+                                                    </a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4 class="fw-bold mb-4">
+                                            <i class="fas fa-paper-plane me-2"></i>Send Message
+                                        </h4>
+                                        <form id="contactForm">
+                                            <div class="mb-3">
+                                                <label for="contactName" class="form-label">Your Name</label>
+                                                <input type="text" class="form-control" id="contactName" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="contactEmail" class="form-label">Email Address</label>
+                                                <input type="email" class="form-control" id="contactEmail" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="contactMessage" class="form-label">Message</label>
+                                                <textarea class="form-control" id="contactMessage" rows="3" required></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">
+                                                <i class="fas fa-paper-plane me-2"></i>Send Message
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-sign-in-alt me-2"></i>User Login
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="loginFullName" class="form-label fw-bold">Full Name</label>
+                            <input type="text" class="form-control" id="loginFullName" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="loginPassword" class="form-label fw-bold">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                            </div>
+                            <a href="#" class="text-decoration-none">Forgot password?</a>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </button>
+                    </form>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <p class="mb-0">Don't have an account? 
+                        <a href="#" class="fw-bold text-decoration-none" data-bs-toggle="modal" data-bs-target="#signupModal" data-bs-dismiss="modal">
+                            Sign up
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal fade" id="signupModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="signupForm">
+                        <div class="mb-3">
+                            <label for="signupFullName" class="form-label fw-bold">Full Name</label>
+                            <input type="text" class="form-control" id="signupFullName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupPhone" class="form-label fw-bold">Phone Number</label>
+                            <input type="tel" class="form-control" id="signupPhone" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupEmail" class="form-label fw-bold">Email Address</label>
+                            <input type="email" class="form-control" id="signupEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupPassword" class="form-label fw-bold">Password</label>
+                            <input type="password" class="form-control" id="signupPassword" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="signupConfirmPassword" class="form-label fw-bold">Confirm Password</label>
+                            <input type="password" class="form-control" id="signupConfirmPassword" required>
+                        </div>
+                        <div class="mb-4 form-check">
+                            <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                            <label class="form-check-label" for="agreeTerms">
+                                I agree to the <a href="#" class="text-decoration-none">Terms and Conditions</a>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </button>
+                    </form>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <p class="mb-0">Already have an account? 
+                        <a href="#" class="fw-bold text-decoration-none" data-bs-toggle="modal" data-bs-target="#loginModal" data-bs-dismiss="modal">
+                            Login
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h5 class="text-uppercase mb-4">
+                        <i class="fas fa-crown me-2"></i>Sultan VIP
+                    </h5>
+                    <p>Secure investment platform offering daily income through VIP packages with transparent banking through Commercial Bank of Ethiopia.</p>
+                    <div class="mt-4">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-linkedin-in fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase mb-4">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#home" class="text-white text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a href="#products" class="text-white text-decoration-none">Products</a></li>
+                        <li class="mb-2"><a href="#recharge" class="text-white text-decoration-none">Recharge</a></li>
+                        <li class="mb-2"><a href="#withdraw" class="text-white text-decoration-none">Withdraw</a></li>
+                        <li class="mb-2"><a href="#team" class="text-white text-decoration-none">Team</a></li>
+                        <li><a href="#contact" class="text-white text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase mb-4">Account</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none" data-bs-toggle="modal" data-bs-target="#loginModal">Login</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none" data-bs-toggle="modal" data-bs-target="#signupModal">Sign Up</a></li>
+                        <li class="mb-2"><a href="#checkin" class="text-white text-decoration-none">Daily Check-in</a></li>
+                        <li><a href="#download" class="text-white text-decoration-none">Download App</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="text-uppercase mb-4">Contact Info</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="fas fa-user me-2"></i> Sultan Mohamed Gemechu
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-university me-2"></i> CBE Account: 1000634709006
+                        </li>
+                        <li class="mb-3">
+                            <i class="fab fa-telegram me-2"></i> Telegram: 
+                            <a href="https://t.me/HNA0993" target="_blank" class="text-white text-decoration-none">@HNA0993</a>
+                        </li>
+                        <li>
+                            <i class="fab fa-whatsapp me-2"></i> WhatsApp: 
+                            <a href="https://wa.me/251993204587" target="_blank" class="text-white text-decoration-none">+251 99 320 4587</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-light">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; 2023 Sultan VIP. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="text-white text-decoration-none me-3">Privacy Policy</a>
+                    <a href="#" class="text-white text-decoration-none">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    
+    <script>
+        // Database simulation
+        const users = [];
+        const userActivities = [];
+        const transactions = [];
+        
+        // Sample data for demonstration
+        function initializeSampleData() {
+            // Sample users
+            for (let i = 1; i <= 20; i++) {
+                users.push({
+                    id: i,
+                    fullName: `User ${i}`,
+                    email: `user${i}@example.com`,
+                    phone: `+2519${Math.floor(10000000 + Math.random() * 90000000)}`,
+                    status: Math.random() > 0.2 ? 'active' : 'inactive',
+                    registrationDate: new Date(Date.now() - Math.floor(Math.random() * 30 * 24 * 60 * 60 * 1000)).toISOString(),
+                    lastLogin: new Date(Date.now() - Math.floor(Math.random() * 3 * 24 * 60 * 60 * 1000)).toISOString()
+                });
+            }
+            
+            // Sample activities
+            const activityTypes = ['login', 'logout', 'page_view', 'recharge', 'withdrawal', 'referral'];
+            const pages = ['#home', '#products', '#recharge', '#withdraw', '#team', '#checkin', '#download', '#contact'];
+            
+            for (let i = 0; i < 50; i++) {
+                const user = users[Math.floor(Math.random() * users.length)];
+                const type = activityTypes[Math.floor(Math.random() * activityTypes.length)];
+                
+                let details = '';
+                if (type === 'page_view') {
+                    details = `Visited ${pages[Math.floor(Math.random() * pages.length)]}`;
+                } else if (type === 'recharge') {
+                    details = `Recharged $${(Math.floor(Math.random() * 20) + 1) * 100}`;
+                } else if (type === 'withdrawal') {
+                    details = `Requested withdrawal of $${(Math.floor(Math.random() * 10) + 1) * 50}`;
+                } else if (type === 'referral') {
+                    details = 'Referred a new user';
+                } else {
+                    details = type.charAt(0).toUpperCase() + type.slice(1);
+                }
+                
+                userActivities.push({
+                    timestamp: new Date(Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000)).toISOString(),
+                    userEmail: user.email,
+                    activityType: type,
+                    details: details,
+                    ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`
+                });
+            }
+            
+            // Sample transactions
+            const transactionTypes = ['recharge', 'withdrawal'];
+            const statuses = ['completed', 'pending', 'failed'];
+            
+            for (let i = 0; i < 30; i++) {
+                const user = users[Math.floor(Math.random() * users.length)];
+                const type = transactionTypes[Math.floor(Math.random() * transactionTypes.length)];
+                const amount = type === 'recharge' ? 
+                    (Math.floor(Math.random() * 20) + 1) * 100 : 
+                    (Math.floor(Math.random() * 10) + 1) * 50;
+                
+                transactions.push({
+                    date: new Date(Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000)).toISOString(),
+                    userEmail: user.email,
+                    type: type,
+                    amount: amount,
+                    status: statuses[Math.floor(Math.random() * statuses.length)]
+                });
+            }
+        }
+        
+        // Initialize sample data
+        initializeSampleData();
+        
+        // Admin Panel Functionality
+        $(document).ready(function() {
+            // Initialize DataTables
+            $('#usersTable').DataTable({
+                data: users,
+                columns: [
+                    { data: 'id' },
+                    { data: 'fullName' },
+                    { data: 'email' },
+                    { data: 'phone' },
+                    { 
+                        data: 'status',
+                        render: function(data) {
+                            const badgeClass = data === 'active' ? 'bg-success' : 'bg-danger';
+                            return `<span class="badge ${badgeClass}">${data}</span>`;
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            return `
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-info" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-warning" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-danger" title="${row.status === 'active' ? 'Ban' : 'Unban'}">
+                                        <i class="fas ${row.status === 'active' ? 'fa-ban' : 'fa-check'}"></i>
+                                    </button>
+                                </div>
+                            `;
+                        }
+                    }
+                ],
+                order: [[0, 'desc']]
+            });
+            
+            $('#activitiesTable').DataTable({
+                data: userActivities,
+                columns: [
+                    { 
+                        data: 'timestamp',
+                        render: function(data) {
+                            return new Date(data).toLocaleString();
+                        }
+                    },
+                    { data: 'userEmail' },
+                    { 
+                        data: 'activityType',
+                        render: function(data) {
+                            return data.charAt(0).toUpperCase() + data.slice(1);
+                        }
+                    },
+                    { data: 'details' },
+                    { data: 'ipAddress' }
+                ],
+                order: [[0, 'desc']]
+            });
+            
+            $('#transactionsTable').DataTable({
+                data: transactions,
+                columns: [
+                    { 
+                        data: 'date',
+                        render: function(data) {
+                            return new Date(data).toLocaleString();
+                        }
+                    },
+                    { data: 'userEmail' },
+                    { 
+                        data: 'type',
+                        render: function(data) {
+                            return data.charAt(0).toUpperCase() + data.slice(1);
+                        }
+                    },
+                    { 
+                        data: 'amount',
+                        render: function(data) {
+                            return `$${data.toFixed(2)}`;
+                        }
+                    },
+                    { 
+                        data: 'status',
+                        render: function(data) {
+                            const badgeClass = data === 'completed' ? 'bg-success' : 
+                                             data === 'pending' ? 'bg-warning' : 'bg-danger';
+                            return `<span class="badge ${badgeClass}">${data.charAt(0).toUpperCase() + data.slice(1)}</span>`;
+                        }
+                    }
+                ],
+                order: [[0, 'desc']]
+            });
+            
+            // Activity search
+            $('#activitySearch').on('keyup', function() {
+                $('#activitiesTable').DataTable().search(this.value).draw();
+            });
+        });
+        
+        // Admin Access
+        document.getElementById('adminAccessBtn').addEventListener('click', function() {
+            const adminLoginModal = new bootstrap.Modal(document.getElementById('adminLoginModal'));
+            adminLoginModal.show();
+        });
+        
+        // Admin Login
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+            const correctPassword = '1234567890'; // Your specified password
+            
+            if (password === correctPassword) {
+                document.getElementById('adminPanel').style.display = 'block';
+                document.getElementById('mainContent').style.display = 'none';
+                this.reset();
+                bootstrap.Modal.getInstance(document.getElementById('adminLoginModal')).hide();
+                
+                // Refresh tables
+                $('#usersTable').DataTable().ajax.reload();
+                $('#activitiesTable').DataTable().ajax.reload();
+                $('#transactionsTable').DataTable().ajax.reload();
+            } else {
+                alert('Incorrect admin password!');
+            }
+        });
+        
+        // Close Admin Panel
+        document.getElementById('closeAdminPanel').addEventListener('click', function() {
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        });
+        
+        // Copy Referral Link
+        function copyReferralLink() {
+            const copyText = document.getElementById("referralLink");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            alert("Referral link copied: " + copyText.value);
+        }
+        
+        // Countdown Timer
+        function updateCountdown() {
+            const now = new Date();
+            const midnight = new Date();
+            midnight.setHours(24, 0, 0, 0);
+            const diff = midnight - now;
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById("countdown").textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+        
+        // Form Submissions
+        document.getElementById("rechargeForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const userEmail = 'user@example.com'; // Would be actual user email
+            
+            // Log transaction
+            transactions.push({
+                date: new Date().toISOString(),
+                userEmail,
+                type: 'recharge',
+                amount: parseFloat(document.getElementById("amount").value),
+                status: 'pending',
+                details: `VIP Package: ${document.getElementById("vipPackage").value}`
+            });
+            
+            // Log activity
+            userActivities.push({
+                timestamp: new Date().toISOString(),
+                userEmail,
+                activityType: 'recharge_request',
+                details: `Requested recharge for $${document.getElementById("amount").value}`,
+                ipAddress: '192.168.1.1' // Would be captured by backend
+            });
+            
+            alert("Recharge request submitted successfully!");
+            this.reset();
+            
+            // Refresh transactions table if admin panel is visible
+            if (document.getElementById('adminPanel').style.display === 'block') {
+                $('#transactionsTable').DataTable().ajax.reload();
+            }
+        });
+        
+        document.getElementById("withdrawForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const userEmail = 'user@example.com'; // Would be actual user email
+            
+            // Log transaction
+            transactions.push({
+                date: new Date().toISOString(),
+                userEmail,
+                type: 'withdrawal',
+                amount: parseFloat(document.getElementById("withdrawAmount").value),
+                status: 'pending',
+                details: `Bank: ${document.getElementById("bankName").value}, Account: ${document.getElementById("accountNumber").value}`
+            });
+            
+            // Log activity
+            userActivities.push({
+                timestamp: new Date().toISOString(),
+                userEmail,
+                activityType: 'withdrawal_request',
+                details: `Requested withdrawal of $${document.getElementById("withdrawAmount").value}`,
+                ipAddress: '192.168.1.1' // Would be captured by backend
+            });
+            
+            alert("Withdrawal request submitted successfully!");
+            this.reset();
+            
+            // Refresh transactions table if admin panel is visible
+            if (document.getElementById('adminPanel').style.display === 'block') {
+                $('#transactionsTable').DataTable().ajax.reload();
+            }
+        });
+        
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const userEmail = document.getElementById("loginFullName").value.toLowerCase().replace(/\s+/g, '') + "@example.com";
+            
+            // Log activity
+            userActivities.push({
+                timestamp: new Date().toISOString(),
+                userEmail,
+                activityType: 'login',
+                details: 'User logged in',
+                ipAddress: '192.168.1.1' // Would be captured by backend
+            });
+            
+            alert("Login successful!");
+            bootstrap.Modal.getInstance(document.getElementById("loginModal")).hide();
+            this.reset();
+        });
+        
+        document.getElementById("signupForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const userEmail = document.getElementById("signupEmail").value;
+            const ipAddress = '192.168.1.1'; // Would be captured by backend
+            
+            const userData = {
+                id: users.length + 1,
+                fullName: document.getElementById("signupFullName").value,
+                phone: document.getElementById("signupPhone").value,
+                email: userEmail,
+                password: document.getElementById("signupPassword").value,
+                ipAddress,
+                registrationDate: new Date().toISOString(),
+                lastLogin: new Date().toISOString(),
+                status: 'active'
+            };
+            
+            // Store user
+            users.push(userData);
+            
+            // Log activity
+            userActivities.push({
+                timestamp: new Date().toISOString(),
+                userEmail,
+                activityType: 'registration',
+                details: 'New user registered',
+                ipAddress
+            });
+            
+            alert("Account created successfully!");
+            bootstrap.Modal.getInstance(document.getElementById("signupModal")).hide();
+            this.reset();
+        });
+        
+        document.getElementById("contactForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const userEmail = document.getElementById("contactEmail").value;
+            
+            // Log activity
+            userActivities.push({
+                timestamp: new Date().toISOString(),
+                userEmail,
+                activityType: 'contact_form',
+                details: `Message: ${document.getElementById("contactMessage").value.substring(0, 50)}...`,
+                ipAddress: '192.168.1.1' // Would be captured by backend
+            });
+            
+            alert("Message sent successfully!");
+            this.reset();
+        });
+        
+        // Track page views
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.hash || '#home';
+            const userEmail = 'guest'; // Would be actual user email when logged in
+            
+            userActivities.push({
+                timestamp: new Date().toISOString(),
+                userEmail,
+                activityType: 'page_view',
+                details: `Visited ${currentPage}`,
+                ipAddress: '192.168.1.1' // Would be captured by backend
+            });
+        });
+    </script>
+</body>
+</html>
